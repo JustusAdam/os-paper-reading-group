@@ -7,4 +7,5 @@
 *.bbl
 *.blg
 *.run.xml
+.DS_Store
 /_build/
