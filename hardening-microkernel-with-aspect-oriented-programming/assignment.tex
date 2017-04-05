@@ -24,6 +24,7 @@
 % \usepackage{fourier} % Use the Adobe Utopia font for the document - comment this line to return to the LaTeX default
 \usepackage[english]{babel} % English language/hyphenation
 \usepackage{amsmath,amsfonts,amsthm} % Math packages
+\usepackage[utf8]{inputenc}
 \usepackage[sfdefault,light,scale=0.85]{roboto}
 
 
@@ -95,7 +96,7 @@ However this cannot be done for the operating system.
 The general idea is to separate the error correction itself from the program code using aspect-oriented programming.
 This relieves the program developer from the responsibility of ensuring correct use of the error protection mechanisms of the protected data structures.
 
-\subsection{Aspect oriented programming and GOP}
+\subsection{Aspect-oriented programming and GOP}
 
 Aspect oriented programming is like compile time reflection.
 It is a model for metaprogramming which allows a programmatic way of defining changes to the program code which are applied during compilation.
@@ -103,5 +104,29 @@ It is a model for metaprogramming which allows a programmatic way of defining ch
 The Generoc Object Protection (GOP) injects a target class with an additional field containing a hamming code.
 The code is a parity for all pieces of state in the class (aka the members).
 
+The basic idea of GOP is that it iserts a check for correctnes of the state of the class using the injected hamming parity code before every call to a method of the class or access to the class fields.
+Additionally after any call to a method of the class or a write to its fields the hamming code is recalculated and the code field updated.
+
+As a result the range of errors this method is able to detect can be configure by the choice of hamming encoding.
+
+\subsection{Optimisation}
+
+The GOP implementation as described above incurs a substantial runtime and code size overhead, as the authors point out in the evaluation.
+To reduce this overhead for some cases the check and update of the parity code is skipped.
+More concretely for sequences of calls to ``cheap'' methods on a GOP protected class or sequences of field access it is redundant to continuaously update the hamming parity just to immediately check it again.
+Therefore the authors propose to use program analysis to find such sequences of statements and remove the intermediate updates and checks and perform only one check at the beginning of the sequence and one update at the end of the sequence.
+
+This is not done directly in the aspect-oriented language but by inspecting the intermediate output of the compiler and querying it for aforementioned points of optimisation.
+This gnerates new aspect rules for the points where the optimisation is to be epplied and then the whole application is recompiled using both the protection and the optimisation.
+
+The team plans to add features to their aspect-oriented language to make it possible to define these optimisation rules programmatically in the future.
+
+\section{Conclusion}
+
+This ort of AOP allows you to harden a kernel unlike some other fault tolerance methods.
+AOP is well suited becuase it separates the protection logic from the program logic.
+Static analysis and optimisations can be used to significanly reduce the overhead of the protection.
+
+And there is some advertisement for the aspect-oriented language the authors wrote themselves.
 
 \end{document}
