@@ -12,5 +12,6 @@ main = shakeArgs shakeOptions{shakeFiles="_build"} $ do
 
         need $ map (-<.> "pdf") assignments
 
-    "**/*.pdf" %> \out ->
+    "**/*.pdf" %> \out -> do
+        need ["main.bib", out -<.> "tex"]
         unit $ cmd "latexmk" "-pdf" (Cwd $ takeDirectory out)

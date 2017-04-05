@@ -53,11 +53,18 @@
 
 \newcommand{\horrule}[1]{\rule{\linewidth}{#1}} % Create horizontal rule command with 1 argument of height
 
+\usepackage[
+backend=bibtex,
+%style=authoryear,
+natbib=true]{biblatex}
+
+\addbibresource{../main.bib}
+
 \title{	
 \normalfont \normalsize 
 \textsc{Technische Universität Dresden} \\ [25pt] % Your university, school and/or department name(s)
 \horrule{0.5pt} \\[0.4cm] % Thin top horizontal rule
-\huge Review of ``Hardening an L4 Microkernel Against Soft Errors bu Aspect-Oriented Programming and Whole-Program Analysis'' \\ % The assignment title
+\huge Review of ``Hardening an L4 Microkernel Against Soft Errors by Aspect-Oriented Programming and Whole-Program Analysis'' \\ % The assignment title
 \horrule{2pt} \\[0.5cm] % Thick bottom horizontal rule
 }
 
@@ -71,7 +78,7 @@
 
 \section{Motivation}
 
-Modern computer ssytems are vulnerable to so called ``soft errors''.
+Modern computer sytems are vulnerable to so called ``soft errors''.
 A ``soft error'' is a transient (not persistent) error.
 Meaning it does not permanenty modify, and potentially disable, the system.
 However these errors lead to unexpected behaviour in the system, usually some sort of program crash.
@@ -81,52 +88,54 @@ A large number of these errors are corrected using (mostly hardware) ECC.
 However this ECC ususally only covers one and two bit errors and more elaborate checks can become costly in hardware.
 
 The idea here therefore is that we use a software protection mechanism to only protect particularly sensitive data.
-in this case the data used by the operating system kernel.
+In this case the data used by the operating system kernel.
 
 \subsection{Prior work}
 
-Similar work done by Shirvani et al. and Samurai previously also use software mechanisms.
+Similar work done by Shirvani et al.\cite{shirvani2000software} and \emph{Samurai}\cite{pattabiraman2008samurai} previously also use software mechanisms.
 These however involve direct use by the programmer and expose rather complex API's, an aspect which makes this error prone.
 
-Another way of correcting random runtime errors is to execute two copies of the smae program and comparing results.
-However this cannot be done for the operating system.
+Another way of correcting random runtime errors is to execute two copies of the same program and comparing results.
+However this cannot be done for the operating system as the systems we want to protect are the systems which would themselves be the ones to run the duplicates.
 
 \section{Approach}
 
-The general idea is to separate the error correction itself from the program code using aspect-oriented programming.
-This relieves the program developer from the responsibility of ensuring correct use of the error protection mechanisms of the protected data structures.
+The general idea in the paper\cite{borchert2016hardening} is to separate the error correction itself from the program code using aspect-oriented programming.
+This relieves the program developer of the responsibility of ensuring correct use of the error protection mechanisms of the protected data structures.
 
 \subsection{Aspect-oriented programming and GOP}
 
 Aspect oriented programming is like compile time reflection.
 It is a model for metaprogramming which allows a programmatic way of defining changes to the program code which are applied during compilation.
 
-The Generoc Object Protection (GOP) injects a target class with an additional field containing a hamming code.
+The Generoc Object Protection (GOP) injects a target class with an additional field containing a Hamming code.
 The code is a parity for all pieces of state in the class (aka the members).
 
-The basic idea of GOP is that it iserts a check for correctnes of the state of the class using the injected hamming parity code before every call to a method of the class or access to the class fields.
-Additionally after any call to a method of the class or a write to its fields the hamming code is recalculated and the code field updated.
+The basic idea of GOP is that it inserts a check for correctnes of the state of the class using the injected Hamming parity code before every call to a method of the class or access to the class fields.
+Additionally after any call to a method of the class or a write to its fields the Hamming code is recalculated and the code field updated.
 
-As a result the range of errors this method is able to detect can be configure by the choice of hamming encoding.
+As a result the range of errors this method is able to detect can be configured by the choice of Hamming encoding.
 
 \subsection{Optimisation}
 
 The GOP implementation as described above incurs a substantial runtime and code size overhead, as the authors point out in the evaluation.
 To reduce this overhead for some cases the check and update of the parity code is skipped.
-More concretely for sequences of calls to ``cheap'' methods on a GOP protected class or sequences of field access it is redundant to continuaously update the hamming parity just to immediately check it again.
+More concretely for sequences of calls to ``cheap'' methods on a GOP protected class or sequences of field access it is redundant to repeatedly update the Hamming parity just to immediately check it again.
 Therefore the authors propose to use program analysis to find such sequences of statements and remove the intermediate updates and checks and perform only one check at the beginning of the sequence and one update at the end of the sequence.
 
 This is not done directly in the aspect-oriented language but by inspecting the intermediate output of the compiler and querying it for aforementioned points of optimisation.
-This gnerates new aspect rules for the points where the optimisation is to be epplied and then the whole application is recompiled using both the protection and the optimisation.
+This generates new aspect rules for the points where the optimisation is to be applied and then the whole application is recompiled using both the protection and the optimisation.
 
 The team plans to add features to their aspect-oriented language to make it possible to define these optimisation rules programmatically in the future.
 
 \section{Conclusion}
 
-This ort of AOP allows you to harden a kernel unlike some other fault tolerance methods.
-AOP is well suited becuase it separates the protection logic from the program logic.
+The described sort of AOP allows you to harden even an operating system a kernel unlike some other fault tolerance methods.
+AOP is well suited for this task, because it separates the protection logic from the program logic.
 Static analysis and optimisations can be used to significanly reduce the overhead of the protection.
 
-And there is some advertisement for the aspect-oriented language the authors wrote themselves.
+And there is some advertisement for the aspect-oriented language the authors wrote themselves in the conclusion as well.
+
+\printbibliography
 
 \end{document}

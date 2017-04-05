@@ -3,4 +3,8 @@
 *.fls
 *.fdb_latexmk
 *.log
+*-blx.bib
+*.bbl
+*.blg
+*.run.xml
 /_build/
