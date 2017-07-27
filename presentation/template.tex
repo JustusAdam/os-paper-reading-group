@@ -1,0 +1,66 @@
+\documentclass[presentation]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{float}
+%\usepackage{fontspec}
+\usepackage{lmodern}
+% \pdfmapfile{+tud}%
+% \pdfmapfile{+tudscr}%
+% \usetheme[pagenum]{tud}
+%\usetheme{Boadilla}
+%\usecolortheme{tud}
+
+\usetheme{Pittsburgh}
+\usecolortheme{beaver}
+
+\addtobeamertemplate{navigation symbols}{}{%
+    \usebeamerfont{footline}%
+    \usebeamercolor[fg]{footline}%
+    \hspace{1em}%
+    \insertframenumber/\inserttotalframenumber
+}
+
+$if(title)$
+\title{$title$}
+$endif$
+$if(subtitle)$
+\subtitle{$subtitle$}
+$endif$
+$if(author)$
+\author{$for(author)$$author$$sep$ \and $endfor$}
+$endif$
+$if(institute)$
+\institute{$for(institute)$$institute$$sep$ \and $endfor$}
+$endif$
+\date{$date$}
+% Prevent slide breaks in the middle of a paragraph:
+\widowpenalties 1 10000
+\raggedbottom
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{}
+$if(numbersections)$
+\setcounter{secnumdepth}{5}
+$else$
+\setcounter{secnumdepth}{1}
+$endif$
+
+%\setlength{\tudbeamerfooterplacewidth}{0.3\linewidth}%
+%\setlength{\tudbeamerfooterpagenumwidth}{5em}%
+%\makeatletter
+%\setlength{\tudbeamerfootertitlewidth}{\paperwidth-\beamer@leftmargin-\beamer@rightmargin
+%-\tudbeamerfooterplacewidth-\tudbeamerfooterpagenumwidth}%
+
+\begin{document}
+
+\maketitle
+
+$if(toc)$
+\begin{frame}
+\tableofcontents[hideallsubsections]
+\end{frame}
+
+$endif$
+$body$
+
+\end{document}

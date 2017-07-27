@@ -9,3 +9,6 @@
 *.run.xml
 .DS_Store
 /_build/
+Shake.o
+Shake.hi
+build
